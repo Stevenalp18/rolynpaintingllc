@@ -1,0 +1,204 @@
+---
+import { ui, serviceMeta, PHONE_DISPLAY, PHONE_TEL, EMAIL, type Lang } from "../i18n/ui";
+import Logo from "./Logo.astro";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const services = t.services.items.map((s, i) => ({ ...s, ...serviceMeta[i] }));
+const words = t.hero.title.split(" ");
+const lead = words.slice(0, -3).join(" ");
+const mark = words.slice(-3).join(" ");
+const field =
+  "w-full rounded border border-line bg-white px-3.5 py-3 text-base focus:outline-none focus:border-ink focus:ring-2 focus:ring-ochre/60";
+---
+
+<main id="main">
+  <!-- HERO -->
+  <section class="relative overflow-hidden">
+    <div class="max-w-page mx-auto px-4 md:px-6 pt-10 pb-14 md:pt-16 md:pb-20 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center">
+      <div>
+        <p class="chip-label text-slate" style="--chip:#7E9C86">{t.hero.eyebrow}</p>
+        <h1 class="mt-5 font-display font-semibold text-[2.6rem] leading-[1.05] sm:text-6xl tracking-tight">
+          {lead} <span class="stroke">{mark}</span>
+        </h1>
+        <p class="mt-6 text-lg leading-relaxed text-slate max-w-[34rem]">{t.hero.body}</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="#contact" class="inline-flex justify-center items-center bg-brick hover:bg-brick-ink text-white font-semibold px-6 py-3.5 rounded transition-colors">{t.hero.cta}</a>
+          <a href={`tel:${PHONE_TEL}`} class="inline-flex justify-center items-center gap-2 border-2 border-ink font-semibold px-6 py-3 rounded hover:bg-ink hover:text-white transition-colors">
+            {t.hero.call} {PHONE_DISPLAY}
+          </a>
+        </div>
+        <dl class="mt-10 grid grid-cols-3 gap-4 max-w-md border-t border-line pt-6">
+          {t.hero.stats.map((s) => (
+            <div>
+              <dt class="sr-only">{s.l}</dt>
+              <dd class="font-display font-semibold text-3xl">{s.n}</dd>
+              <dd class="text-sm text-slate leading-snug mt-1">{s.l}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <figure class="relative">
+        <div class="absolute -left-3 top-8 bottom-8 w-3 flex flex-col rounded-l overflow-hidden" aria-hidden="true">
+          <span class="flex-1 bg-brick"></span><span class="flex-1 bg-ochre"></span><span class="flex-1 bg-sage"></span><span class="flex-1 bg-harbor"></span>
+        </div>
+        <img src="/assets/residential.jpg" alt={t.hero.photoAlt} width="800" height="1000" fetchpriority="high"
+          class="w-full aspect-[4/5] object-cover rounded-md shadow-[0_24px_60px_-20px_rgba(30,36,48,0.45)] bg-line" />
+        <figcaption class="absolute bottom-4 right-4 bg-white/95 text-ink text-sm font-medium px-3 py-2 rounded shadow">{t.hero.caption}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="bg-white border-y border-line">
+    <div class="max-w-page mx-auto px-4 md:px-6 py-16 md:py-24">
+      <div class="max-w-2xl">
+        <p class="chip-label text-slate">{t.services.label}</p>
+        <h2 class="mt-4 font-display font-semibold text-4xl sm:text-5xl tracking-tight leading-[1.05]">{t.services.title}</h2>
+        <p class="mt-4 text-lg text-slate">{t.services.intro}</p>
+      </div>
+
+      <ul class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+        {services.map((s) => (
+          <li class="group">
+            <div class="rounded-md overflow-hidden border border-line bg-paper">
+              <div class="overflow-hidden">
+                <img src={s.img} alt={s.alt} loading="lazy" width="600" height="450"
+                  class="w-full aspect-[4/3] object-cover bg-line group-hover:scale-[1.03] transition-transform duration-500" />
+              </div>
+              <div class="flex items-stretch">
+                <span class="w-3 shrink-0" style={`background:${s.chip}`} aria-hidden="true"></span>
+                <div class="p-5">
+                  <div class="flex items-baseline justify-between gap-3">
+                    <h3 class="font-display font-semibold text-xl">{s.name}</h3>
+                    <span class="text-[0.7rem] font-semibold tracking-widest text-slate/80" aria-hidden="true">{s.code}</span>
+                  </div>
+                  <p class="mt-2 text-slate leading-relaxed">{s.body}</p>
+                  <p class="mt-3 text-sm font-medium text-ink/70 inline-flex items-center gap-1.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                    {s.place}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-12 rounded-md border-2 border-dashed border-line p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <p class="font-display font-semibold text-2xl">{t.services.ask}</p>
+          <p class="text-slate mt-1">{t.services.askBody}</p>
+        </div>
+        <a href="#contact" class="inline-flex justify-center bg-ink hover:bg-black text-white font-semibold px-5 py-3 rounded transition-colors">{t.services.askCta}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="max-w-page mx-auto px-4 md:px-6 py-16 md:py-24 grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16">
+      <div>
+        <p class="chip-label text-slate" style="--chip:#E3B24F">{t.about.label}</p>
+        <h2 class="mt-4 font-display font-semibold text-4xl sm:text-5xl tracking-tight leading-[1.05]">{t.about.title}</h2>
+        <ul class="mt-8 flex flex-wrap gap-2">
+          {t.about.badges.map((b) => (
+            <li class="text-sm font-medium border border-ink/20 rounded-full px-3.5 py-1.5 bg-white">{b}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="text-lg leading-relaxed text-slate space-y-5 max-w-[38rem] lg:pt-10">
+        <p>{t.about.p1}</p>
+        <p>{t.about.p2}</p>
+        <p class="text-ink font-medium">{t.about.p3}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AREAS -->
+  <section id="areas" class="bg-harbor text-white">
+    <div class="max-w-page mx-auto px-4 md:px-6 py-16 md:py-20">
+      <p class="chip-label text-white/70" style="--chip:#E3B24F">{t.areas.label}</p>
+      <h2 class="mt-4 font-display font-semibold text-4xl sm:text-5xl tracking-tight">{t.areas.title}</h2>
+      <ul class="mt-10 grid md:grid-cols-3 gap-px bg-white/15 rounded-md overflow-hidden">
+        {t.areas.regions.map((r) => (
+          <li class="bg-harbor p-6">
+            <p class="font-display font-semibold text-2xl">{r.name}</p>
+            <p class="mt-2 text-white/75">{r.note}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-6 text-white/80">{t.areas.notListed}</p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="bg-ink text-white">
+    <div class="max-w-page mx-auto px-4 md:px-6 py-16 md:py-24 grid lg:grid-cols-[0.85fr_1.15fr] gap-10 lg:gap-16">
+      <div>
+        <p class="chip-label text-white/70">{t.contact.label}</p>
+        <h2 class="mt-4 font-display font-semibold text-4xl sm:text-5xl tracking-tight leading-[1.05]">{t.contact.title}</h2>
+        <p class="mt-5 text-lg text-white/75 leading-relaxed">{t.contact.sub}</p>
+        <div class="mt-10 space-y-5">
+          <div>
+            <p class="text-white/60 text-sm">{t.contact.orCall}</p>
+            <a href={`tel:${PHONE_TEL}`} class="font-display font-semibold text-3xl hover:text-ochre transition-colors">{PHONE_DISPLAY}</a>
+          </div>
+          <div>
+            <p class="text-white/60 text-sm">{t.contact.orEmail}</p>
+            <a href={`mailto:${EMAIL}`} class="font-medium text-lg underline underline-offset-4 decoration-white/30 hover:decoration-ochre break-all">{EMAIL}</a>
+          </div>
+        </div>
+      </div>
+
+      <form action={`https://formsubmit.co/${EMAIL}`} method="POST"
+        class="bg-paper text-ink rounded-md p-6 sm:p-8 grid sm:grid-cols-2 gap-5">
+        <input type="hidden" name="_subject" value={t.contact.subject} />
+        <input type="hidden" name="_template" value="table" />
+        <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <div class="sm:col-span-2">
+          <label for="name" class="block font-medium mb-1.5">{t.contact.name}</label>
+          <input id="name" name="name" type="text" autocomplete="name" required class={field} />
+        </div>
+        <div>
+          <label for="email" class="block font-medium mb-1.5">{t.contact.email}</label>
+          <input id="email" name="email" type="email" autocomplete="email" required class={field} />
+        </div>
+        <div>
+          <label for="phone" class="block font-medium mb-1.5">{t.contact.phone} <span class="text-slate font-normal">{t.contact.optional}</span></label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" class={field} />
+        </div>
+        <div class="sm:col-span-2">
+          <label for="service" class="block font-medium mb-1.5">{t.contact.type}</label>
+          <select id="service" name="project_type" class={field}>
+            {t.contact.options.map((o) => <option>{o}</option>)}
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="message" class="block font-medium mb-1.5">{t.contact.message}</label>
+          <textarea id="message" name="message" rows="5" required placeholder={t.contact.placeholder} class={field}></textarea>
+        </div>
+        <div class="sm:col-span-2 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+          <button type="submit" class="bg-brick hover:bg-brick-ink text-white font-semibold px-6 py-3.5 rounded transition-colors">{t.contact.submit}</button>
+          <p class="text-sm text-slate">{t.contact.privacy}</p>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-ink text-white border-t border-white/10">
+  <div class="max-w-page mx-auto px-4 md:px-6 py-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div>
+      <Logo light />
+      <p class="mt-3 text-sm text-white/60">{t.footer.tag} · {t.footer.licensed}</p>
+    </div>
+    <div class="text-sm text-white/60 space-y-1 md:text-right">
+      <p><a href={`tel:${PHONE_TEL}`} class="hover:text-white">{PHONE_DISPLAY}</a> · <a href={`mailto:${EMAIL}`} class="hover:text-white">{EMAIL}</a></p>
+      <p>© {new Date().getFullYear()} Rolyn Painting LLC · {t.footer.siteBy} <span class="text-white/80 font-medium">Helix Web Solutions</span></p>
+    </div>
+  </div>
+</footer>

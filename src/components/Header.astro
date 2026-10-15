@@ -1,0 +1,63 @@
+---
+import { ui, PHONE_DISPLAY, PHONE_TEL, homePath, type Lang } from "../i18n/ui";
+import Logo from "./Logo.astro";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang].nav;
+const links = [
+  { href: "#services", label: t.services },
+  { href: "#about", label: t.about },
+  { href: "#areas", label: t.areas },
+  { href: "#contact", label: t.contact },
+];
+---
+
+<header class="sticky top-0 z-40 bg-paper/95 backdrop-blur border-b border-line">
+  <div class="max-w-page mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-4">
+    <a href={homePath(lang)} aria-label={t.home} class="shrink-0"><Logo /></a>
+
+    <nav class="hidden lg:flex items-center gap-7 text-[0.95rem] font-medium" aria-label="Main">
+      {links.map((l) => <a href={l.href} class="hover:text-brick transition-colors">{l.label}</a>)}
+    </nav>
+
+    <div class="flex items-center gap-2 sm:gap-3">
+      <a href={t.switchHref} hreflang={lang === "en" ? "es" : "en"} aria-label={t.switchAria}
+        class="text-sm font-semibold underline underline-offset-4 decoration-line hover:decoration-brick px-2 py-2">{t.switchLabel}</a>
+      <a href={`tel:${PHONE_TEL}`} class="hidden md:inline-flex items-center gap-2 text-sm font-semibold px-3 py-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+        {PHONE_DISPLAY}
+      </a>
+      <a href="#contact" class="hidden sm:inline-flex bg-brick hover:bg-brick-ink text-white text-sm font-semibold px-4 py-2.5 rounded transition-colors">{t.estimate}</a>
+      <button id="menu-btn" class="lg:hidden p-2 -mr-2" aria-expanded="false" aria-controls="mobile-nav" aria-label={t.menu}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" class="hidden lg:hidden border-t border-line bg-paper" aria-label="Mobile">
+    <ul class="max-w-page mx-auto px-4 py-3 flex flex-col">
+      {links.map((l) => <li><a href={l.href} class="block py-3 text-lg font-medium border-b border-line/70">{l.label}</a></li>)}
+      <li class="pt-4 pb-2 grid grid-cols-2 gap-3">
+        <a href={`tel:${PHONE_TEL}`} class="text-center border border-ink font-semibold py-3 rounded">{PHONE_DISPLAY}</a>
+        <a href="#contact" class="text-center bg-brick text-white font-semibold py-3 rounded">{t.estimate}</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const btn = document.getElementById("menu-btn");
+  const nav = document.getElementById("mobile-nav");
+  btn?.addEventListener("click", () => {
+    const open = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", String(!open));
+    nav?.classList.toggle("hidden", open);
+  });
+  nav?.querySelectorAll("a").forEach((a) =>
+    a.addEventListener("click", () => {
+      nav.classList.add("hidden");
+      btn?.setAttribute("aria-expanded", "false");
+    })
+  );
+</script>
