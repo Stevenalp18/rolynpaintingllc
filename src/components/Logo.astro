@@ -2,14 +2,6 @@
 interface Props { light?: boolean }
 const { light = false } = Astro.props;
 ---
-<span class={`inline-flex items-center gap-2.5 ${light ? "text-white" : "text-ink"}`}>
-  <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true">
-    <rect x="2" y="3" width="8" height="26" rx="1.5" fill="#B8472A" />
-    <rect x="12" y="3" width="8" height="26" rx="1.5" fill="#E3B24F" />
-    <rect x="22" y="3" width="8" height="26" rx="1.5" fill="#2E5A78" />
-  </svg>
-  <span class="leading-none">
-    <span class="block font-display font-semibold text-[1.3rem] tracking-tight">Rolyn Painting</span>
-    <span class={`block text-[0.62rem] font-semibold tracking-[0.2em] uppercase mt-0.5 ${light ? "text-white/60" : "text-slate"}`}>LLC · DC · MD · VA</span>
-  </span>
+<span class={`inline-flex items-center ${light ? "bg-white rounded px-3 py-2" : ""}`}>
+  <img src="/assets/logo.png" alt="Rolyn Painting LLC" width="182" height="63" class="h-11 w-auto" />
 </span>

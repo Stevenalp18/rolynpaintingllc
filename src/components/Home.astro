@@ -1,11 +1,13 @@
 ---
-import { ui, serviceMeta, PHONE_DISPLAY, PHONE_TEL, EMAIL, type Lang } from "../i18n/ui";
+import { ui, serviceMeta, gallery, PHONE_DISPLAY, PHONE_TEL, EMAIL, type Lang } from "../i18n/ui";
 import Logo from "./Logo.astro";
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = ui[lang];
 const services = t.services.items.map((s, i) => ({ ...s, ...serviceMeta[i] }));
+const cats = ["interior", "exterior", "commercial", "drywall"] as const;
+const ofWord = t.work.of;
 const words = t.hero.title.split(" ");
 const lead = words.slice(0, -3).join(" ");
 const mark = words.slice(-3).join(" ");
@@ -42,10 +44,10 @@ const field =
 
       <figure class="relative">
         <div class="absolute -left-3 top-8 bottom-8 w-3 flex flex-col rounded-l overflow-hidden" aria-hidden="true">
-          <span class="flex-1 bg-brick"></span><span class="flex-1 bg-ochre"></span><span class="flex-1 bg-sage"></span><span class="flex-1 bg-harbor"></span>
+          <span class="flex-1 bg-[#A8185F]"></span><span class="flex-1 bg-[#D8601A]"></span><span class="flex-1 bg-ochre"></span><span class="flex-1 bg-[#78A830]"></span><span class="flex-1 bg-sage"></span><span class="flex-1 bg-harbor"></span>
         </div>
-        <img src="/assets/residential.jpg" alt={t.hero.photoAlt} width="800" height="1000" fetchpriority="high"
-          class="w-full aspect-[4/5] object-cover rounded-md shadow-[0_24px_60px_-20px_rgba(30,36,48,0.45)] bg-line" />
+        <img src="/assets/work/living-room.jpg" alt={t.hero.photoAlt} width="1400" height="1050" fetchpriority="high"
+          class="w-full aspect-[4/5] lg:aspect-[5/6] object-cover object-[35%_50%] rounded-md shadow-[0_24px_60px_-20px_rgba(30,36,48,0.45)] bg-line" />
         <figcaption class="absolute bottom-4 right-4 bg-white/95 text-ink text-sm font-medium px-3 py-2 rounded shadow">{t.hero.caption}</figcaption>
       </figure>
     </div>
@@ -76,10 +78,10 @@ const field =
                     <span class="text-[0.7rem] font-semibold tracking-widest text-slate/80" aria-hidden="true">{s.code}</span>
                   </div>
                   <p class="mt-2 text-slate leading-relaxed">{s.body}</p>
-                  <p class="mt-3 text-sm font-medium text-ink/70 inline-flex items-center gap-1.5">
+                  {s.place && <p class="mt-3 text-sm font-medium text-ink/70 inline-flex items-center gap-1.5">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
                     {s.place}
-                  </p>
+                  </p>}
                 </div>
               </div>
             </div>
@@ -95,6 +97,46 @@ const field =
         <a href="#contact" class="inline-flex justify-center bg-ink hover:bg-black text-white font-semibold px-5 py-3 rounded transition-colors">{t.services.askCta}</a>
       </div>
     </div>
+  </section>
+
+  <!-- WORK / GALLERY -->
+  <section id="work" class="bg-paper">
+    <div class="max-w-page mx-auto px-4 md:px-6 py-16 md:py-24">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-2xl">
+          <p class="chip-label text-slate" style="--chip:#008B95">{t.work.label}</p>
+          <h2 class="mt-4 font-display font-semibold text-4xl sm:text-5xl tracking-tight leading-[1.05]">{t.work.title}</h2>
+          <p class="mt-4 text-lg text-slate">{t.work.intro}</p>
+        </div>
+        <div role="group" aria-label={t.work.filterLabel} class="flex flex-wrap gap-2" id="filters">
+          <button type="button" data-cat="all" aria-pressed="true" class="filter">{t.work.all}</button>
+          {cats.map((c) => <button type="button" data-cat={c} aria-pressed="false" class="filter">{t.work.cats[c]}</button>)}
+        </div>
+      </div>
+
+      <ul id="grid" class="mt-10 columns-2 md:columns-3 lg:columns-4 gap-3 [&>li]:mb-3">
+        {gallery.map((g, i) => (
+          <li data-cat={g.cat} class="break-inside-avoid">
+            <button type="button" data-i={i} class="block w-full overflow-hidden rounded group focus:outline-none focus-visible:ring-4 focus-visible:ring-ochre">
+              <img src={g.src} alt={g[lang]} loading="lazy" class="w-full h-auto bg-line group-hover:scale-[1.03] transition-transform duration-500" />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <dialog id="lightbox" class="backdrop:bg-ink/90 bg-transparent p-0 max-w-none w-screen h-screen m-0" aria-label={t.work.label}>
+      <div class="w-full h-full flex flex-col items-center justify-center p-4 gap-3" data-close>
+        <img id="lb-img" src="" alt="" class="max-h-[78vh] max-w-full object-contain rounded shadow-2xl" />
+        <p id="lb-cap" class="text-white/90 text-center max-w-xl"></p>
+        <p id="lb-count" class="text-white/50 text-sm"></p>
+        <div class="flex gap-3">
+          <button type="button" id="lb-prev" aria-label={t.work.prev} class="lb-btn">&larr;</button>
+          <button type="button" id="lb-close" class="lb-btn lb-close">{t.work.close}</button>
+          <button type="button" id="lb-next" aria-label={t.work.next} class="lb-btn">&rarr;</button>
+        </div>
+      </div>
+    </dialog>
   </section>
 
   <!-- ABOUT -->
@@ -202,3 +244,66 @@ const field =
     </div>
   </div>
 </footer>
+
+<style>
+  .filter {
+    font-size: 0.9rem; font-weight: 600; padding: 0.5rem 0.95rem; border-radius: 999px;
+    border: 1px solid #D6CFC2; background: #fff; color: #1E2430; transition: all .15s;
+  }
+  .filter:hover { border-color: #1E2430; }
+  .filter[aria-pressed="true"] { background: #054676; border-color: #054676; color: #fff; }
+  .lb-btn {
+    width: 3rem; height: 3rem; border-radius: 999px; background: rgba(255,255,255,.12); color: #fff;
+    font-size: 1.15rem; font-weight: 600; display: grid; place-items: center;
+  }
+  .lb-btn:hover { background: rgba(255,255,255,.25); }
+  .lb-close { width: auto; padding: 0 1.4rem; font-size: 1rem; }
+</style>
+
+<script define:vars={{ photos: gallery.map((g) => ({ src: g.src, alt: g[lang] })), ofWord }}>
+  const grid = document.getElementById("grid");
+  const items = [...grid.querySelectorAll("li")];
+  let visible = items.map((_, i) => i);
+
+  document.querySelectorAll("#filters .filter").forEach((b) =>
+    b.addEventListener("click", () => {
+      const cat = b.dataset.cat;
+      document.querySelectorAll("#filters .filter").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      visible = [];
+      items.forEach((li, i) => {
+        const show = cat === "all" || li.dataset.cat === cat;
+        li.hidden = !show;
+        if (show) visible.push(i);
+      });
+    })
+  );
+
+  const dlg = document.getElementById("lightbox");
+  const img = document.getElementById("lb-img");
+  const cap = document.getElementById("lb-cap");
+  const count = document.getElementById("lb-count");
+  let pos = 0;
+  const show = () => {
+    const p = photos[visible[pos]];
+    img.src = p.src; img.alt = p.alt; cap.textContent = p.alt;
+    count.textContent = `${pos + 1} ${ofWord} ${visible.length}`;
+  };
+  const step = (d) => { pos = (pos + d + visible.length) % visible.length; show(); };
+
+  grid.querySelectorAll("button[data-i]").forEach((b) =>
+    b.addEventListener("click", () => {
+      pos = visible.indexOf(Number(b.dataset.i));
+      show();
+      dlg.showModal();
+    })
+  );
+  document.getElementById("lb-prev").onclick = (e) => { e.stopPropagation(); step(-1); };
+  document.getElementById("lb-next").onclick = (e) => { e.stopPropagation(); step(1); };
+  document.getElementById("lb-close").onclick = () => dlg.close();
+  dlg.addEventListener("click", (e) => { if (e.target.hasAttribute?.("data-close")) dlg.close(); });
+  document.addEventListener("keydown", (e) => {
+    if (!dlg.open) return;
+    if (e.key === "ArrowLeft") step(-1);
+    if (e.key === "ArrowRight") step(1);
+  });
+</script>
